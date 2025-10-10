@@ -14,6 +14,7 @@ async function request(path, { method = 'GET', body, token } = {}) {
   return data
 }
 
+//is this works
 export const api = {
   register: (email, password) => request('/auth/register', { method: 'POST', body: { email, password } }),
   login: (email, password) => request('/auth/login', { method: 'POST', body: { email, password } }),
