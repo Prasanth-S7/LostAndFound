@@ -42,18 +42,18 @@ export default function ReportFound() {
     contact_info: "",
   });
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/auth');
-      return;
-    }
-    setSession({ user: { token } });
-    // load lost items for dropdown
-    api.listItems(undefined, 'lost').then(({ items }) => {
-      setLostOptions(items);
-    }).catch(() => {});
-  }, [navigate]);
+  // useEffect(() => {
+  //   const token = localStorage.getItem('token');
+  //   if (!token) {
+  //     navigate('/auth');
+  //     return;
+  //   }
+  //   setSession({ user: { token } });
+  //   // load lost items for dropdown
+  //   api.listItems(undefined, 'lost').then(({ items }) => {
+  //     setLostOptions(items);
+  //   }).catch(() => {});
+  // }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

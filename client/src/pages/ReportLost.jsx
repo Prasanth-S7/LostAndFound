@@ -40,14 +40,14 @@ export default function ReportLost() {
     phone: "",
   });
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/auth');
-      return;
-    }
-    setSession({ user: { token } });
-  }, [navigate]);
+  // useEffect(() => {
+  //   const token = localStorage.getItem('token');
+  //   if (!token) {
+  //     navigate('/auth');
+  //     return;
+  //   }
+  //   setSession({ user: { token } });
+  // }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

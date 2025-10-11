@@ -21,7 +21,7 @@ services:
   auth-service:
     build: ./auth-service
     environment:
-      NODE_ENV: development
+      NODE_ENV: production
       PORT: 4001
       PGHOST: postgres
       PGPORT: 5432
@@ -38,7 +38,7 @@ services:
   items-service:
     build: ./items-service
     environment:
-      NODE_ENV: development
+      NODE_ENV: production
       PORT: 4002
       PGHOST: postgres
       PGPORT: 5432
@@ -60,10 +60,10 @@ services:
   api-gateway:
     build: ./api-gateway
     environment:
-      NODE_ENV: development
+      NODE_ENV: production
       PORT: 8080
-      AUTH_SERVICE_URL: http://auth-service:4001
-      ITEMS_SERVICE_URL: http://items-service:4002
+      AUTH_SERVICE_URL: https://lostandfound-auth.internal.proudgrass-f22ced18.centralindia.azurecontainerapps.io
+      ITEMS_SERVICE_URL: https://lostandfound-items.internal.proudgrass-f22ced18.centralindia.azurecontainerapps.io
       CORS_ORIGIN: ${CORS_ORIGIN:-*}
     depends_on:
       - auth-service
