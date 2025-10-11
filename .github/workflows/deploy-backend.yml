@@ -1,4 +1,4 @@
-name: Deploy Backend to Azure
+name: Deploy Backend
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
     paths: [ 'backend/**' ]
 
 jobs:
-  deploy-backend:
+  deploy:
     runs-on: ubuntu-latest
     
     steps:
@@ -18,26 +18,26 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
         
-    - name: Build and push auth service
+    - name: Login to ACR
+      run: |
+        az acr login --name lostandfound6e7c665094dd0f40acr
+        
+    - name: Build and push services
       run: |
         cd backend/auth-service
-        docker build -t ${{ secrets.ACR_REGISTRY }}/lostandfound-auth:latest .
-        docker push ${{ secrets.ACR_REGISTRY }}/lostandfound-auth:latest
+        docker build -t lostandfound6e7c665094dd0f40acr.azurecr.io/lostandfound-auth:latest .
+        docker push lostandfound6e7c665094dd0f40acr.azurecr.io/lostandfound-auth:latest
         
-    - name: Build and push items service
-      run: |
-        cd backend/items-service
-        docker build -t ${{ secrets.ACR_REGISTRY }}/lostandfound-items:latest .
-        docker push ${{ secrets.ACR_REGISTRY }}/lostandfound-items:latest
+        cd ../items-service
+        docker build -t lostandfound6e7c665094dd0f40acr.azurecr.io/lostandfound-items:latest .
+        docker push lostandfound6e7c665094dd0f40acr.azurecr.io/lostandfound-items:latest
         
-    - name: Build and push gateway
-      run: |
-        cd backend/api-gateway
-        docker build -t ${{ secrets.ACR_REGISTRY }}/lostandfound-gateway:latest .
-        docker push ${{ secrets.ACR_REGISTRY }}/lostandfound-gateway:latest
+        cd ../api-gateway
+        docker build -t lostandfound6e7c665094dd0f40acr.azurecr.io/lostandfound-gateway:latest .
+        docker push lostandfound6e7c665094dd0f40acr.azurecr.io/lostandfound-gateway:latest
         
-    - name: Restart container apps
+    - name: Update container apps
       run: |
-        az containerapp update --name lostandfound-auth --resource-group ${{ secrets.RESOURCE_GROUP }} --image ${{ secrets.ACR_REGISTRY }}/lostandfound-auth:latest
-        az containerapp update --name lostandfound-items --resource-group ${{ secrets.RESOURCE_GROUP }} --image ${{ secrets.ACR_REGISTRY }}/lostandfound-items:latest
-        az containerapp update --name lostandfound-gateway --resource-group ${{ secrets.RESOURCE_GROUP }} --image ${{ secrets.ACR_REGISTRY }}/lostandfound-gateway:latest
+        az containerapp update --name lostandfound-auth --resource-group ${{ secrets.RESOURCE_GROUP }} --image lostandfound6e7c665094dd0f40acr.azurecr.io/lostandfound-auth:latest
+        az containerapp update --name lostandfound-items --resource-group ${{ secrets.RESOURCE_GROUP }} --image lostandfound6e7c665094dd0f40acr.azurecr.io/lostandfound-items:latest
+        az containerapp update --name lostandfound-gateway --resource-group ${{ secrets.RESOURCE_GROUP }} --image lostandfound6e7c665094dd0f40acr.azurecr.io/lostandfound-gateway:latest
