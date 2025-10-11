@@ -1,0 +1,14 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- script: echo "Hello, World! This is a simple pipeline"
+  displayName: 'Run simple command'
+
+- script: |
+    echo "Pipeline is running successfully"
+    echo "No special permissions needed"
+  displayName: 'Print success message'
