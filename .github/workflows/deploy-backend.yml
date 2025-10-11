@@ -1,0 +1,43 @@
+name: Deploy Backend to Azure
+
+on:
+  push:
+    branches: [ main ]
+    paths: [ 'backend/**' ]
+
+jobs:
+  deploy-backend:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
+    - name: Build and push auth service
+      run: |
+        cd backend/auth-service
+        docker build -t ${{ secrets.ACR_REGISTRY }}/lostandfound-auth:latest .
+        docker push ${{ secrets.ACR_REGISTRY }}/lostandfound-auth:latest
+        
+    - name: Build and push items service
+      run: |
+        cd backend/items-service
+        docker build -t ${{ secrets.ACR_REGISTRY }}/lostandfound-items:latest .
+        docker push ${{ secrets.ACR_REGISTRY }}/lostandfound-items:latest
+        
+    - name: Build and push gateway
+      run: |
+        cd backend/api-gateway
+        docker build -t ${{ secrets.ACR_REGISTRY }}/lostandfound-gateway:latest .
+        docker push ${{ secrets.ACR_REGISTRY }}/lostandfound-gateway:latest
+        
+    - name: Restart container apps
+      run: |
+        az containerapp update --name lostandfound-auth --resource-group ${{ secrets.RESOURCE_GROUP }} --image ${{ secrets.ACR_REGISTRY }}/lostandfound-auth:latest
+        az containerapp update --name lostandfound-items --resource-group ${{ secrets.RESOURCE_GROUP }} --image ${{ secrets.ACR_REGISTRY }}/lostandfound-items:latest
+        az containerapp update --name lostandfound-gateway --resource-group ${{ secrets.RESOURCE_GROUP }} --image ${{ secrets.ACR_REGISTRY }}/lostandfound-gateway:latest
