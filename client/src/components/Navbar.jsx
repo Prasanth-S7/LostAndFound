@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { LogOut, Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { api } from "@/lib/api";
 
 
 export const Navbar = ({ user }) => {
@@ -9,6 +10,10 @@ export const Navbar = ({ user }) => {
   const { toast } = useToast();
 
   const handleSignOut = async () => {
+    api.logout();
+    localStorage.removeItem('token');
+    toast({ title: "Signed out" });
+    navigate('/auth');
   };
 
   return (

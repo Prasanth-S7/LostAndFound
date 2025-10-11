@@ -17,6 +17,14 @@ const Index = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // Check if user is logged in
+    const token = localStorage.getItem('token');
+    if (token) {
+      const currentUser = api.getCurrentUser();
+      if (currentUser) {
+        setSession({ user: currentUser });
+      }
+    }
     fetchItems();
   }, []);
 
@@ -24,24 +32,24 @@ const Index = () => {
     setIsLoading(true);
     try {
       const { items } = await api.listItems();
-      // items-service returns generic items with status field; map to two lists by status
+      // Map items to the format expected by ItemCard component
       const lost = items.filter((i) => i.status === 'lost').map((i) => ({
         id: i.id,
         item_name: i.title,
-        category: 'other',
+        category: i.category || 'other',
         description: i.description,
         location_lost: i.location,
         date_lost: i.created_at,
-        contact_info: 'N/A',
+        contact_info: i.contact_email || i.contact_phone || 'N/A',
       }))
       const found = items.filter((i) => i.status === 'found').map((i) => ({
         id: i.id,
         item_name: i.title,
-        category: 'other',
+        category: i.category || 'other',
         description: i.description,
         location_found: i.location,
         date_found: i.created_at,
-        contact_info: 'N/A',
+        contact_info: i.contact_email || i.contact_phone || 'N/A',
       }))
       setLostItems(lost)
       setFoundItems(found)
@@ -89,6 +97,29 @@ const Index = () => {
           <div className="flex gap-3">
             <Button onClick={() => navigate('/report-lost')}>Report Lost Item</Button>
             <Button variant="outline" onClick={() => navigate('/report-found')}>Report Found Item</Button>
+            {process.env.NODE_ENV === 'development' && (
+              <>
+                <Button 
+                  variant="secondary" 
+                  onClick={() => {
+                    api.populateSampleData();
+                    fetchItems();
+                  }}
+                >
+                  Load Sample Data
+                </Button>
+                <Button 
+                  variant="destructive" 
+                  onClick={() => {
+                    api.clearAllData();
+                    setLostItems([]);
+                    setFoundItems([]);
+                  }}
+                >
+                  Clear All Data
+                </Button>
+              </>
+            )}
           </div>
         </div>
 

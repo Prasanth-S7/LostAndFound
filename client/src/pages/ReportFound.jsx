@@ -42,18 +42,23 @@ export default function ReportFound() {
     contact_info: "",
   });
 
-  // useEffect(() => {
-  //   const token = localStorage.getItem('token');
-  //   if (!token) {
-  //     navigate('/auth');
-  //     return;
-  //   }
-  //   setSession({ user: { token } });
-  //   // load lost items for dropdown
-  //   api.listItems(undefined, 'lost').then(({ items }) => {
-  //     setLostOptions(items);
-  //   }).catch(() => {});
-  // }, [navigate]);
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/auth');
+      return;
+    }
+    const currentUser = api.getCurrentUser();
+    if (currentUser) {
+      setSession({ user: currentUser });
+      // load lost items for dropdown
+      api.listItems(undefined, 'lost').then(({ items }) => {
+        setLostOptions(items);
+      }).catch(() => {});
+    } else {
+      navigate('/auth');
+    }
+  }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -71,6 +76,9 @@ export default function ReportFound() {
           description: formData.description,
           location: formData.location_found,
           status: 'found',
+          category: formData.category,
+          contact_email: formData.contact_info.includes('@') ? formData.contact_info : '',
+          contact_phone: formData.contact_info.includes('@') ? '' : formData.contact_info,
         });
       }
       navigate("/");
@@ -209,80 +217,6 @@ export default function ReportFound() {
                   </div>
                 </>
               )}
-              <div className="space-y-2">
-                <Label htmlFor="item_name">Item Name *</Label>
-                <Input
-                  id="item_name"
-                  value={formData.item_name}
-                  onChange={(e) => setFormData({ ...formData, item_name: e.target.value })}
-                  required
-                  placeholder="e.g., iPhone 13, Blue Backpack"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="category">Category *</Label>
-                <Select
-                  value={formData.category}
-                  onValueChange={(value) => setFormData({ ...formData, category: value })}
-                  required
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {categories.map((cat) => (
-                      <SelectItem key={cat} value={cat}>
-                        {cat.charAt(0).toUpperCase() + cat.slice(1)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Provide additional details about the item"
-                  rows={4}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="location_found">Location Found *</Label>
-                <Input
-                  id="location_found"
-                  value={formData.location_found}
-                  onChange={(e) => setFormData({ ...formData, location_found: e.target.value })}
-                  required
-                  placeholder="e.g., Library, Main Building"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="date_found">Date Found *</Label>
-                <Input
-                  id="date_found"
-                  type="date"
-                  value={formData.date_found}
-                  onChange={(e) => setFormData({ ...formData, date_found: e.target.value })}
-                  required
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="contact_info">Contact Info *</Label>
-                <Input
-                  id="contact_info"
-                  value={formData.contact_info}
-                  onChange={(e) => setFormData({ ...formData, contact_info: e.target.value })}
-                  required
-                  placeholder="Email or phone number"
-                />
-              </div>
 
               <div className="flex gap-4">
                 <Button type="submit" disabled={isLoading} className="flex-1">

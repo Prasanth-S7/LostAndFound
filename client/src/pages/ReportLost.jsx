@@ -40,14 +40,19 @@ export default function ReportLost() {
     phone: "",
   });
 
-  // useEffect(() => {
-  //   const token = localStorage.getItem('token');
-  //   if (!token) {
-  //     navigate('/auth');
-  //     return;
-  //   }
-  //   setSession({ user: { token } });
-  // }, [navigate]);
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/auth');
+      return;
+    }
+    const currentUser = api.getCurrentUser();
+    if (currentUser) {
+      setSession({ user: currentUser });
+    } else {
+      navigate('/auth');
+    }
+  }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -62,6 +67,7 @@ export default function ReportLost() {
         description: formData.description,
         location: formData.location_lost,
         status: 'lost',
+        category: formData.category,
         contact_email: formData.email,
         contact_phone: formData.phone,
       });

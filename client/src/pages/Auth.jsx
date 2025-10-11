@@ -27,7 +27,7 @@ export default function Auth() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const { token } = await api.login(loginEmail, loginPassword);
+      const { token, user } = await api.login(loginEmail, loginPassword);
       localStorage.setItem("token", token);
       toast({ title: "Logged in" });
       navigate("/");
@@ -43,7 +43,7 @@ export default function Auth() {
     setIsLoading(true);
     try {
       await api.register(signupEmail, signupPassword);
-      const { token } = await api.login(signupEmail, signupPassword);
+      const { token, user } = await api.login(signupEmail, signupPassword);
       localStorage.setItem("token", token);
       toast({ title: "Account created" });
       navigate("/");
