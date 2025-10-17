@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom"
 export const Home= () => {
     const navigate = useNavigate();
     return(
-        <div className="min-h-screen max-h-3xl bg-[#09090b] text-white flex items-center justify-center font-fanwood bg-black">
+        <div className="min-h-screen max-h-3xl text-white flex items-center justify-center font-fanwood bg-black">
             <div>
                 <div className="text-7xl font-fanwood">
                     Find What’s <span >Lost</span>, <span> Return What’s Found</span>
