@@ -24,7 +24,7 @@ export const ItemCard = ({ item, type }) => {
   };
 
   return (
-    <Card className="hover:shadow-lg transition-all duration-300 hover:scale-[1.02]">
+    <Card className="hover:shadow-lg transition-all duration-300 hover:scale-[1.02] bg-black text-white border border-white/10">
       <CardHeader>
         <div className="flex items-start justify-between">
           <div className="space-y-1 flex-1">
@@ -36,7 +36,7 @@ export const ItemCard = ({ item, type }) => {
               </Badge>
               <Badge 
                 variant={type === "lost" ? "destructive" : "default"}
-                className={type === "lost" ? "" : "bg-success hover:bg-success/90"}
+                className={type === "lost" ? "" : "bg-green-400 hover:bg-success/90"}
               >
                 {type === "lost" ? "Lost" : "Found"}
               </Badge>
@@ -63,17 +63,16 @@ export const ItemCard = ({ item, type }) => {
           )}
           
           <div className="flex items-center gap-2 text-muted-foreground">
-            {item.contact_info.includes("@") ? (
-              <>
-                <Mail className="h-4 w-4 text-primary" />
-                <span className="break-all">{item.contact_info}</span>
-              </>
-            ) : (
-              <>
-                <Phone className="h-4 w-4 text-primary" />
-                <span>{item.contact_info}</span>
-              </>
-            )}
+            <>
+              <Mail className="h-4 w-4 text-primary" />
+              <span className="break-all">{item.contact_email}</span>
+            </>
+          </div>
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <>
+              <Phone className="h-4 w-4 text-primary" />
+              <span>{item.contact_phone}</span>
+            </>
           </div>
         </div>
       </CardContent>

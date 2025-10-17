@@ -27,10 +27,10 @@ export default function Auth() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const { token, user } = await api.login(loginEmail, loginPassword);
+      const { token } = await api.login(loginEmail, loginPassword);
       localStorage.setItem("token", token);
       toast({ title: "Logged in" });
-      navigate("/");
+      navigate("/dashboard");
     } catch (err) {
       toast({ title: "Login failed", description: err.message, variant: "destructive" });
     } finally {
@@ -43,7 +43,7 @@ export default function Auth() {
     setIsLoading(true);
     try {
       await api.register(signupEmail, signupPassword);
-      const { token, user } = await api.login(signupEmail, signupPassword);
+      const { token } = await api.login(signupEmail, signupPassword);
       localStorage.setItem("token", token);
       toast({ title: "Account created" });
       navigate("/");
@@ -55,44 +55,43 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background flex items-center justify-center p-4">
+    <div className="min-h-screen bg-black flex items-center justify-center p-4">
       <div className="w-full max-w-md space-y-6">
         <div className="text-center space-y-2">
           <div className="flex items-center justify-center gap-2 mb-4">
-            <Search className="h-10 w-10 text-primary" />
-            <h1 className="text-4xl font-bold text-primary">Lost & Found</h1>
+            <Search className="h-10 w-10 text-white" />
+            <h1 className="text-4xl font-bold text-white font-fanwood">Lost & Found</h1>
           </div>
-          <p className="text-muted-foreground">Help reunite people with their belongings</p>
+          <p className="font-fanwood text-white text-xl">Help reunite people with their belongings</p>
         </div>
 
-        <Card>
+        <Card className="bg-black border-white/20">
           <CardHeader>
-            <CardTitle>Welcome</CardTitle>
-            <CardDescription>Login or create an account to continue</CardDescription>
+            <CardTitle className={"text-white font-fanwood text-xl"}>Welcome</CardTitle>
+            <CardDescription className={"text-white font-fanwood text-xl"}>Login or create an account to continue</CardDescription>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="login" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
+            <Tabs defaultValue="login" className="w-full bg-black space-y-8">
+              <TabsList className="grid w-full grid-cols-2 bg-black border border-white/10">
                 <TabsTrigger value="login">Login</TabsTrigger>
                 <TabsTrigger value="signup">Sign Up</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="login">
+              <TabsContent value="login" className="bg-black">
                 <form onSubmit={handleLogin} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="login-email">Email</Label>
                     <Input
                       id="login-email"
                       type="email"
-                      placeholder="name@example.com"
+                      placeholder="Email"
                       value={loginEmail}
                       onChange={(e) => setLoginEmail(e.target.value)}
                       required
                       disabled={isLoading}
+                      className={"border-white/10 py-5 text-white"}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="login-password">Password</Label>
                     <Input
                       id="login-password"
                       type="password"
@@ -100,9 +99,11 @@ export default function Auth() {
                       onChange={(e) => setLoginPassword(e.target.value)}
                       required
                       disabled={isLoading}
+                      placeholder="Password"
+                      className={"border-white/10 py-5 text-white"}
                     />
                   </div>
-                  <Button type="submit" className="w-full" disabled={isLoading}>
+                  <Button type="submit" className="w-full cursor-pointer" disabled={isLoading}>
                     {isLoading ? "Logging in..." : "Login"}
                   </Button>
                 </form>
@@ -111,42 +112,43 @@ export default function Auth() {
               <TabsContent value="signup">
                 <form onSubmit={handleSignup} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="signup-name">Full Name</Label>
                     <Input
                       id="signup-name"
                       type="text"
-                      placeholder="John Doe"
+                      placeholder="Name"
                       value={signupFullName}
                       onChange={(e) => setSignupFullName(e.target.value)}
                       required
                       disabled={isLoading}
+                      className={"border-white/10 py-5 text-white"}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signup-email">Email</Label>
                     <Input
                       id="signup-email"
                       type="email"
-                      placeholder="name@example.com"
+                      placeholder="Email"
                       value={signupEmail}
                       onChange={(e) => setSignupEmail(e.target.value)}
                       required
                       disabled={isLoading}
+                      className={"border-white/10 py-5 text-white"}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signup-password">Password</Label>
                     <Input
                       id="signup-password"
-                      type="password"
+                      type="Password"
                       value={signupPassword}
                       onChange={(e) => setSignupPassword(e.target.value)}
                       required
                       disabled={isLoading}
                       minLength={6}
+                      placeholder="Password"
+                      className={"border-white/10 py-5 text-white"}
                     />
                   </div>
-                  <Button type="submit" className="w-full" disabled={isLoading}>
+                  <Button type="submit" className="w-full cursor-pointer" disabled={isLoading}>
                     {isLoading ? "Creating account..." : "Sign Up"}
                   </Button>
                 </form>

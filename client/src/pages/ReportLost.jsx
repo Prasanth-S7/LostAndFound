@@ -46,12 +46,7 @@ export default function ReportLost() {
       navigate('/auth');
       return;
     }
-    const currentUser = api.getCurrentUser();
-    if (currentUser) {
-      setSession({ user: currentUser });
-    } else {
-      navigate('/auth');
-    }
+    setSession({ user: { token } });
   }, [navigate]);
 
   const handleSubmit = async (e) => {
@@ -67,7 +62,6 @@ export default function ReportLost() {
         description: formData.description,
         location: formData.location_lost,
         status: 'lost',
-        category: formData.category,
         contact_email: formData.email,
         contact_phone: formData.phone,
       });
@@ -76,7 +70,7 @@ export default function ReportLost() {
         description: "Your lost item has been added to the system.",
       });
       
-      navigate("/");
+      navigate("/dashboard");
     } catch (error) {
       toast({
         title: "Error reporting item",
@@ -91,11 +85,11 @@ export default function ReportLost() {
   if (!session) return null;
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar user={session.user} />
+    <div className="min-h-screen bg-black text-white flex items-center">
+      {/* <Navbar user={session.user} /> */}
       
       <div className="container mx-auto px-4 py-8 max-w-2xl">
-        <Card>
+        <Card className={"bg-black text-white border border-white/10"}>
           <CardHeader>
             <CardTitle>Report Lost Item</CardTitle>
             <CardDescription>
@@ -122,7 +116,7 @@ export default function ReportLost() {
                   onValueChange={(value) => setFormData({ ...formData, category: value })}
                   required
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className={"border border-white/10"}>
                     <SelectValue placeholder="Select a category" />
                   </SelectTrigger>
                   <SelectContent>
@@ -142,6 +136,7 @@ export default function ReportLost() {
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   placeholder="Provide additional details about the item"
+                  className={"border border-white/10"}
                   rows={4}
                 />
               </div>
@@ -192,23 +187,12 @@ export default function ReportLost() {
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="contact_info">Contact Info *</Label>
-                <Input
-                  id="contact_info"
-                  value={formData.contact_info}
-                  onChange={(e) => setFormData({ ...formData, contact_info: e.target.value })}
-                  required
-                  placeholder="Email or phone number"
-                />
-              </div>
-
               <div className="flex gap-4">
-                <Button type="submit" disabled={isLoading} className="flex-1">
-                  {isLoading ? "Submitting..." : "Submit Report"}
-                </Button>
-                <Button type="button" variant="outline" onClick={() => navigate("/")} className="flex-1">
+                <Button type="button" onClick={() => navigate("/dashboard")} className="flex-1 bg-red-500 hover:bg-red-600 cursor-pointer">
                   Cancel
+                </Button>
+                <Button type="submit" disabled={isLoading} className="flex-1 cursor-pointer">
+                  {isLoading ? "Submitting..." : "Submit Report"}
                 </Button>
               </div>
             </form>

@@ -39,7 +39,8 @@ export default function ReportFound() {
     description: "",
     location_found: "",
     date_found: "",
-    contact_info: "",
+    email: "",
+    phone_no: ""
   });
 
   useEffect(() => {
@@ -48,16 +49,11 @@ export default function ReportFound() {
       navigate('/auth');
       return;
     }
-    const currentUser = api.getCurrentUser();
-    if (currentUser) {
-      setSession({ user: currentUser });
-      // load lost items for dropdown
-      api.listItems(undefined, 'lost').then(({ items }) => {
-        setLostOptions(items);
-      }).catch(() => {});
-    } else {
-      navigate('/auth');
-    }
+    setSession({ user: { token } });
+    // load lost items for dropdown
+    api.listItems(undefined, 'lost').then(({ items }) => {
+      setLostOptions(items);
+    }).catch(() => {});
   }, [navigate]);
 
   const handleSubmit = async (e) => {
@@ -76,12 +72,9 @@ export default function ReportFound() {
           description: formData.description,
           location: formData.location_found,
           status: 'found',
-          category: formData.category,
-          contact_email: formData.contact_info.includes('@') ? formData.contact_info : '',
-          contact_phone: formData.contact_info.includes('@') ? '' : formData.contact_info,
         });
       }
-      navigate("/");
+      navigate("/dashboard");
     } catch (error) {
       toast({
         title: "Error reporting item",
@@ -96,11 +89,11 @@ export default function ReportFound() {
   if (!session) return null;
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar user={session.user} />
+    <div className="min-h-screen bg-black text-white flex items-center">
+      {/* <Navbar user={session.user} /> */}
       
       <div className="container mx-auto px-4 py-8 max-w-2xl">
-        <Card>
+        <Card className={"bg-black text-white border border-white/10"}>
           <CardHeader>
             <CardTitle>Report Found Item</CardTitle>
             <CardDescription>
@@ -124,21 +117,67 @@ export default function ReportFound() {
               </div>
 
               {mode === 'existing' ? (
-                <div className="space-y-2">
-                  <Label htmlFor="existing_id">Select lost item *</Label>
-                  <Select value={selectedLostId} onValueChange={setSelectedLostId} required>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Choose an item" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {lostOptions.map((i) => (
-                        <SelectItem key={i.id} value={String(i.id)}>
-                          {i.title}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="existing_id">Select lost item *</Label>
+                    <Select value={selectedLostId} onValueChange={setSelectedLostId} required>
+                      <SelectTrigger className={"border border-white/10"}>
+                        <SelectValue placeholder="Choose an item" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {lostOptions.map((i) => (
+                          <SelectItem key={i.id} value={String(i.id)}>
+                            {i.title}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                      <Label htmlFor="location_found">Location Found *</Label>
+                      <Input
+                        id="location_found"
+                        value={formData.location_found}
+                        onChange={(e) => setFormData({ ...formData, location_found: e.target.value })}
+                        required
+                        placeholder="e.g., Library, Main Building"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="date_found">Date Found *</Label>
+                      <Input
+                        id="date_found"
+                        type="date"
+                        value={formData.date_found}
+                        onChange={(e) => setFormData({ ...formData, date_found: e.target.value })}
+                        required
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="contact_info">Email *</Label>
+                      <Input
+                        id="contact_info"
+                        value={formData.email}
+                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        required
+                        placeholder="Email or phone number"
+                      />
+                    </div>
+
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="contact_info">Phone No *</Label>
+                      <Input
+                        id="phone_no"
+                        value={formData.phone_no}
+                        onChange={(e) => setFormData({ ...formData, phone_no: e.target.value })}
+                        required
+                        placeholder="Email or phone number"
+                      />
+                    </div>
+                  </>
               ) : (
                 <>
                   <div className="space-y-2">
@@ -159,7 +198,7 @@ export default function ReportFound() {
                       onValueChange={(value) => setFormData({ ...formData, category: value })}
                       required
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className={"border border-white/10"}>
                         <SelectValue placeholder="Select a category" />
                       </SelectTrigger>
                       <SelectContent>
@@ -179,6 +218,7 @@ export default function ReportFound() {
                       value={formData.description}
                       onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                       placeholder="Provide additional details about the item"
+                      className={"border border-white/10"}
                       rows={4}
                     />
                   </div>
@@ -206,24 +246,34 @@ export default function ReportFound() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="contact_info">Contact Info *</Label>
+                    <Label htmlFor="contact_info">Email *</Label>
                     <Input
-                      id="contact_info"
-                      value={formData.contact_info}
-                      onChange={(e) => setFormData({ ...formData, contact_info: e.target.value })}
+                      id="email"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       required
-                      placeholder="Email or phone number"
+                      placeholder="Email"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="contact_info">Phone No *</Label>
+                    <Input
+                      id="email"
+                      value={formData.phone_no}
+                      onChange={(e) => setFormData({ ...formData, phone_no: e.target.value })}
+                      required
+                      placeholder="Phone No"
                     />
                   </div>
                 </>
               )}
-
               <div className="flex gap-4">
+                <Button type="button" onClick={() => navigate("/dashboard")} className="flex-1 bg-red-500">
+                  Cancel
+                </Button>
                 <Button type="submit" disabled={isLoading} className="flex-1">
                   {isLoading ? "Submitting..." : "Submit Report"}
-                </Button>
-                <Button type="button" variant="outline" onClick={() => navigate("/")} className="flex-1">
-                  Cancel
                 </Button>
               </div>
             </form>
