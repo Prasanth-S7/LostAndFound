@@ -21,13 +21,10 @@ jobs:
           
       - name: Install and Build App
         run: |
-          # Go to the app folder
           cd client
-          # Install dependencies
           npm install
-          # Run the build command
           npm run build
-          # The output will be in client/dist (based on your output_location)
+          cp client/staticwebapp.config.json client/dist/staticwebapp.config.json
 
       - name: Deploy Pre-built Artifacts
         id: builddeploy
