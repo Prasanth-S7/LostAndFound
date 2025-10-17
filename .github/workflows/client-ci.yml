@@ -24,7 +24,7 @@ jobs:
           cd client
           npm install
           npm run build
-          cp client/staticwebapp.config.json client/dist/staticwebapp.config.json
+          cp staticwebapp.config.json dist/staticwebapp.config.json
 
       - name: Deploy Pre-built Artifacts
         id: builddeploy
