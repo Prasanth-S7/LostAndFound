@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Navbar } from "@/components/Navbar";
+import { HomeNavbar } from "@/components/HomeNavbar";
 import { api } from "@/lib/api";
 
 const categories = [
@@ -62,6 +62,7 @@ export default function ReportLost() {
         description: formData.description,
         location: formData.location_lost,
         status: 'lost',
+        category: formData.category,
         contact_email: formData.email,
         contact_phone: formData.phone,
       });
@@ -85,11 +86,11 @@ export default function ReportLost() {
   if (!session) return null;
 
   return (
-    <div className="min-h-screen bg-black text-white flex items-center">
-      {/* <Navbar user={session.user} /> */}
-      
+    <div>
+      <HomeNavbar />
+    <div className="min-h-[calc(100vh-100px)] bg-background text-black flex items-center">
       <div className="container mx-auto px-4 py-8 max-w-2xl">
-        <Card className={"bg-black text-white border border-white/10"}>
+        <Card className={"bg-background text-black border border-black/20"}>
           <CardHeader>
             <CardTitle>Report Lost Item</CardTitle>
             <CardDescription>
@@ -199,6 +200,7 @@ export default function ReportLost() {
           </CardContent>
         </Card>
       </div>
+    </div>
     </div>
   );
 }

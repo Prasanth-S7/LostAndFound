@@ -55,29 +55,29 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-md space-y-6">
         <div className="text-center space-y-2">
           <div className="flex items-center justify-center gap-2 mb-4">
-            <Search className="h-10 w-10 text-white" />
-            <h1 className="text-4xl font-bold text-white font-fanwood">Lost & Found</h1>
+            <Search className="h-10 w-10 text-black" />
+            <h1 className="text-4xl font-bold text-black font-fanwood">LostNFound</h1>
           </div>
-          <p className="font-fanwood text-white text-xl">Help reunite people with their belongings</p>
+          <p className="font-fanwood text-black text-xl">Help reunite people with their belongings</p>
         </div>
 
-        <Card className="bg-black border-white/20">
+        <Card className="bg-background border-black/20">
           <CardHeader>
-            <CardTitle className={"text-white font-fanwood text-xl"}>Welcome</CardTitle>
-            <CardDescription className={"text-white font-fanwood text-xl"}>Login or create an account to continue</CardDescription>
+            <CardTitle className={"text-black font-fanwood text-xl"}>Welcome</CardTitle>
+            <CardDescription className={"text-black font-fanwood text-xl"}>Login or create an account to continue</CardDescription>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="login" className="w-full bg-black space-y-8">
+            <Tabs defaultValue="login" className="w-full bg-background space-y-8">
               <TabsList className="grid w-full grid-cols-2 bg-black border border-white/10">
                 <TabsTrigger value="login">Login</TabsTrigger>
                 <TabsTrigger value="signup">Sign Up</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="login" className="bg-black">
+              <TabsContent value="login" className="bg-background">
                 <form onSubmit={handleLogin} className="space-y-4">
                   <div className="space-y-2">
                     <Input
@@ -88,7 +88,7 @@ export default function Auth() {
                       onChange={(e) => setLoginEmail(e.target.value)}
                       required
                       disabled={isLoading}
-                      className={"border-white/10 py-5 text-white"}
+                      className={"border-black/20 py-5 text-black"}
                     />
                   </div>
                   <div className="space-y-2">
@@ -100,7 +100,7 @@ export default function Auth() {
                       required
                       disabled={isLoading}
                       placeholder="Password"
-                      className={"border-white/10 py-5 text-white"}
+                      className={"border-black/20 py-5 text-black"}
                     />
                   </div>
                   <Button type="submit" className="w-full cursor-pointer" disabled={isLoading}>
@@ -120,7 +120,7 @@ export default function Auth() {
                       onChange={(e) => setSignupFullName(e.target.value)}
                       required
                       disabled={isLoading}
-                      className={"border-white/10 py-5 text-white"}
+                      className={"border-black/20 py-5 text-black"}
                     />
                   </div>
                   <div className="space-y-2">
@@ -132,7 +132,7 @@ export default function Auth() {
                       onChange={(e) => setSignupEmail(e.target.value)}
                       required
                       disabled={isLoading}
-                      className={"border-white/10 py-5 text-white"}
+                      className={"border-black/20 py-5 text-black"}
                     />
                   </div>
                   <div className="space-y-2">
@@ -145,7 +145,7 @@ export default function Auth() {
                       disabled={isLoading}
                       minLength={6}
                       placeholder="Password"
-                      className={"border-white/10 py-5 text-white"}
+                      className={"border-black/20 py-5 text-black"}
                     />
                   </div>
                   <Button type="submit" className="w-full cursor-pointer" disabled={isLoading}>

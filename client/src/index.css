@@ -146,12 +146,13 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
   --font-poppins: "Poppins", sans-serif;
-  --font-fanwood: fanwood, var(--font-sans)
+  --font-fanwood: fanwood, var(--font-sans);
+  --font-epilogue-black: epilogue-black, var(--font-sans);
 }
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
+  --background: oklch(0.9415 0.0545 82.38);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -233,4 +234,12 @@
   font-weight: 200 700;
   font-display: swap;
   src: url("/fonts/fanwood.woff") format("woff");
+}
+
+@font-face {
+  font-family: epilogue-black;
+  font-style: normal;
+  font-weight: 200 700;
+  font-display: swap;
+  src: url("/fonts/EpilogueBlack.woff") format("woff");
 }

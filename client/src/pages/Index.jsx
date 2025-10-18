@@ -36,7 +36,7 @@ const Dashboard = () => {
       const lost = items.filter((i) => i.status === 'lost').map((i) => ({
         id: i.id,
         item_name: i.title,
-        category: 'other',
+        category: i.category,
         description: i.description,
         location_lost: i.location,
         date_lost: i.created_at,
@@ -46,7 +46,7 @@ const Dashboard = () => {
       const found = items.filter((i) => i.status === 'found').map((i) => ({
         id: i.id,
         item_name: i.title,
-        category: 'other',
+        category: i.category,
         description: i.description,
         location_found: i.location,
         date_found: i.created_at,
@@ -78,18 +78,18 @@ const Dashboard = () => {
   // if (!session) return null;
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-background">
       <Navbar />
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8 space-y-4">          
-          <p className="text-white font-fanwood text-4xl text-center">Browse lost and found items or report your own</p>
+          <p className="text-black font-fanwood text-4xl text-center">Browse lost and found items or report your own</p>
           <div className="relative max-w-md mx-auto">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search items..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 py-5 text-white"
+              className="pl-10 py-5 text-black"
             />
           </div>
         </div>
@@ -118,7 +118,7 @@ const Dashboard = () => {
             {isLoading ? (
               <p className="text-center text-muted-foreground">Loading...</p>
             ) : filterItems(foundItems).length === 0 ? (
-              <p className="text-center text-muted-foreground">No found items reported</p>
+              <p className="text-center text-muted-foreground font-poppins">No found items reported</p>
             ) : (
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {filterItems(foundItems).map((item) => (

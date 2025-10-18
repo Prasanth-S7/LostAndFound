@@ -12,10 +12,10 @@ export const Navbar = ({ user }) => {
   };
 
   return (
-    <nav className="border-b border-white/20 bg-black backdrop-blur-sm sticky top-0 z-50 w-full flex justify-center">
-      <div className="container h-16 flex items-center justify-between">
-        <Link to="/" className="text-2xl font-fanwood text-white">
-          Lost & Found
+    <nav className="border-b border-black/20 bg-background backdrop-blur-sm sticky top-0 z-50 px-8">
+      <div className="w-full h-16 flex items-center justify-between">
+        <Link to="/" className="text-2xl font-fanwood text-black">
+          LostNFound
         </Link>
         <div className="flex items-center gap-4">
             <>
@@ -23,7 +23,7 @@ export const Navbar = ({ user }) => {
                 onClick={() => navigate("/report-lost")}
                 className="gap-2 cursor-pointer"
               >
-                <Plus className="h-4 w-4" />
+              <Plus className="h-4 w-4" />
                 Report Lost
               </Button>
               <Button

@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Navbar } from "@/components/Navbar";
+import { HomeNavbar } from "@/components/HomeNavbar";
 import { api } from "@/lib/api";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
@@ -89,11 +89,11 @@ export default function ReportFound() {
   if (!session) return null;
 
   return (
-    <div className="min-h-screen bg-black text-white flex items-center">
-      {/* <Navbar user={session.user} /> */}
-      
+    <div>
+      <HomeNavbar />
+    <div className="min-h-[calc(100vh-100px)] bg-background text-black flex items-center">
       <div className="container mx-auto px-4 py-8 max-w-2xl">
-        <Card className={"bg-black text-white border border-white/10"}>
+        <Card className={"bg-background text-black border border-black/20"}>
           <CardHeader>
             <CardTitle>Report Found Item</CardTitle>
             <CardDescription>
@@ -280,6 +280,7 @@ export default function ReportFound() {
           </CardContent>
         </Card>
       </div>
+    </div>
     </div>
   );
 }
