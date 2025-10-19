@@ -26,6 +26,7 @@ app.post('/auth/register', async (req, res) => {
 
 app.post('/auth/login', async (req, res) => {
   try {
+    console.log(AUTH_SERVICE_URL);
     const r = await axios.post(`${AUTH_SERVICE_URL}/login`, req.body)
     res.status(r.status).json(r.data)
   } catch (e) {

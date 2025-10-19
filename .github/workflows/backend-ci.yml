@@ -25,6 +25,7 @@ jobs:
           acrName: lostandfound6e7c665094dd0f40acr
           containerAppName: lostandfound-auth
           resourceGroup: lostandfound-rg-6e7c665094dd0f40
+          imageToBuild: lostandfound6e7c665094dd0f40acr.azurecr.io/auth-service:${{ github.sha }}
 
       - name: Build and deploy Item service
         uses: azure/container-apps-deploy-action@v1
@@ -33,6 +34,7 @@ jobs:
           acrName: lostandfound6e7c665094dd0f40acr
           containerAppName: lostandfound-items
           resourceGroup: lostandfound-rg-6e7c665094dd0f40
+          imageToBuild: lostandfound6e7c665094dd0f40acr.azurecr.io/items-service:${{ github.sha }}
 
       - name: Build and deploy API Gateway service
         uses: azure/container-apps-deploy-action@v1
@@ -41,3 +43,4 @@ jobs:
           acrName: lostandfound6e7c665094dd0f40acr
           containerAppName: lostandfound-gateway
           resourceGroup: lostandfound-rg-6e7c665094dd0f40
+          imageToBuild: lostandfound6e7c665094dd0f40acr.azurecr.io/api-gateway:${{ github.sha }}
