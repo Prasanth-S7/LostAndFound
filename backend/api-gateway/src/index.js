@@ -11,7 +11,6 @@ const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL || 'http://localhost:4001'
 const ITEMS_SERVICE_URL = process.env.ITEMS_SERVICE_URL || 'http://localhost:4002'
 
 app.get('/health', (req, res) => {
-  //comment addedd
   res.json({ status: 'ok', service: 'api-gateway' })
 })
 
