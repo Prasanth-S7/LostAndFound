@@ -29,7 +29,7 @@ jobs:
       - name: Build and deploy Item service
         uses: azure/container-apps-deploy-action@v1
         with:
-          appSourcePath: ${{ github.workspace }}/backend/item-service
+          appSourcePath: ${{ github.workspace }}/backend/items-service
           acrName: lostandfound6e7c665094dd0f40acr
           containerAppName: lostandfound-items
           resourceGroup: lostandfound-rg-6e7c665094dd0f40
