@@ -21,7 +21,7 @@ The system follows a **microservices architecture** for better scalability and m
 
 > 📋 **Lost & Found Listings**  
 >  
-> ![Items Page](./images/dashboard.png)  
+> ![Items Page](./client/src/assets/dashboard.png)  
 
 > 📨 **Report Item Flow**  
 >  
