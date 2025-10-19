@@ -3,6 +3,8 @@ import cors from 'cors'
 import jwt from 'jsonwebtoken'
 import pkg from 'pg'
 import nodemailer from 'nodemailer'
+import dotenv from "dotenv"
+dotenv.config();
 
 const { Pool } = pkg
 
@@ -10,13 +12,13 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 
-const PORT = process.env.PORT || 4002
-const JWT_SECRET = process.env.JWT_SECRET || 'devsecret'
-const SMTP_HOST = process.env.SMTP_HOST || 'smtp.gmail.com'
+const PORT = process.env.PORT
+const JWT_SECRET = process.env.JWT_SECRET
+const SMTP_HOST = process.env.SMTP_HOST
 const SMTP_PORT = Number(process.env.SMTP_PORT || 587)
-const SMTP_USER = process.env.SMTP_USER || 'prasanthsampath2005@gmail.com'
-const SMTP_PASS = process.env.SMTP_PASS || 'dktq thsu srdn wirf'
-const SENDER_EMAIL = process.env.SENDER_EMAIL || 'prasanthsampath2005@gmail.com'
+const SMTP_USER = process.env.SMTP_USER
+const SMTP_PASS = process.env.SMTP_PASS
+const SENDER_EMAIL = process.env.SENDER_EMAIL
 const mailer = (SMTP_HOST && SMTP_USER) ? nodemailer.createTransport({
   host: SMTP_HOST,
   port: SMTP_PORT,
@@ -25,11 +27,12 @@ const mailer = (SMTP_HOST && SMTP_USER) ? nodemailer.createTransport({
 }) : null
 
 const pool = new Pool({
-  host: process.env.PGHOST || 'localhost',
+  host: process.env.PGHOST,
   port: Number(process.env.PGPORT || 5432),
-  database: process.env.PGDATABASE || 'lostandfound',
-  user: process.env.PGUSER || 'postgres',
-  password: process.env.PGPASSWORD || 'postgres'
+  database: process.env.PGDATABASE,
+  user: process.env.PGUSER,
+  password: process.env.PGPASSWORD,
+  ssl: process.env.NODE_ENV === 'development' ? false : true
 })
 
 async function init() {
@@ -39,6 +42,7 @@ async function init() {
       title text not null,
       description text,
       location text,
+      category text,
       status text not null default 'lost', -- 'lost' | 'found'
       user_id integer,
       contact_email text,
@@ -89,18 +93,15 @@ app.get('/items', async (req, res) => {
 })
 
 app.post('/items', requireAuth, async (req, res) => {
-  const { title, description, location, status, contact_email, contact_phone } = req.body || {}
+  const { title, description, location, status, contact_email, contact_phone, category } = req.body || {}
   if (!title) return res.status(400).json({ error: 'title required' })
   try {
     const r = await pool.query(
-      'insert into items (title, description, location, status, user_id, contact_email, contact_phone) values ($1,$2,$3,$4,$5,$6,$7) returning *',
-      [title, description || null, location || null, status || 'lost', req.user.sub, contact_email || null, contact_phone || null]
+      'insert into items (title, description, location, category, status, user_id, contact_email, contact_phone) values ($1,$2,$3,$4,$5,$6,$7,$8) returning *',
+      [title, description || null, location, category || null, status || 'lost', req.user.sub, contact_email || null, contact_phone || null]
     )
     const item = r.rows[0]
     // Fire-and-forget email to reporter when a lost item is created (if email provided)
-    console.log('item', item.status)
-    console.log('item_contact_email', item.contact_email)
-    console.log('mailer', mailer)
     if (mailer && item.status === 'lost' && item.contact_email) {
       mailer.sendMail({
         from: SENDER_EMAIL,

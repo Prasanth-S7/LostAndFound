@@ -1,4 +1,4 @@
-## Lost & Found Backend (Node.js Microservices)
+## LostNFound Backend (Node.js Microservices)
 
 Simple microservices backend designed for Azure deployment.
 

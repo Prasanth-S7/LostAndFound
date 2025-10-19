@@ -3,6 +3,8 @@ import cors from 'cors'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
 import pkg from 'pg'
+import dotenv from "dotenv";
+dotenv.config();
 
 const { Pool } = pkg
 
@@ -12,13 +14,15 @@ app.use(cors())
 
 const PORT = process.env.PORT || 4001
 const JWT_SECRET = process.env.JWT_SECRET || 'devsecret'
+console.log(process.env.PGHOST);
 
 const pool = new Pool({
-  host: process.env.PGHOST || 'localhost',
-  port: Number(process.env.PGPORT || 5432),
-  database: process.env.PGDATABASE || 'lostandfound',
-  user: process.env.PGUSER || 'postgres',
-  password: process.env.PGPASSWORD || 'postgres'
+  host: process.env.PGHOST,
+  port: Number(process.env.PGPORT),
+  database: process.env.PGDATABASE,
+  user: process.env.PGUSER,
+  password: process.env.PGPASSWORD,
+  ssl: process.env.NODE_ENV === 'development' ? false : true
 })
 
 async function init() {
