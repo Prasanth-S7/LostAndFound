@@ -23,5 +23,3 @@ export const api = {
   createItem: (token, item) => request('/items', { method: 'POST', body: item, token }),
   markFound: (token, id) => request(`/items/${id}/found`, { method: 'POST', token }),
 }
-
-
