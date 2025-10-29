@@ -206,7 +206,7 @@ app.get('/items/similar', async (req, res) => {
     // 5️⃣ Execute query
     const r = await pool.query(sql, params);
 
-    // 6️⃣ Handle no matches
+    // 6️⃣ Handle no matchess
     if (r.rows.length === 0) {
       return res.json({ message: "No similar items found", items: [] });
     }
