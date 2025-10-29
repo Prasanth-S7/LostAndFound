@@ -74,6 +74,13 @@ For monitoring and observability, the project integrates **Azure Managed Grafana
 - Prebuilt **Azure Container App dashboards** imported in Grafana.  
 - Centralized monitoring of microservices and resource health.
 
+> 🧭 **Grafana Dashboards**  
+>  
+> ![Dashboard Preview](./client/src/assets/grafana.png)
+>
+> ![Dashboard Preview](./client/src/assets/grafana2.png)
+
+
 ## 🧠 Features  
 
 - 🔐 **JWT-based authentication**  
