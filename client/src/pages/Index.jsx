@@ -79,7 +79,7 @@ const Dashboard = () => {
     try {
       setIsLoading(true);
       const res = await fetch(
-        `${import.meta.env.VITE_API_URL || "http://localhost:8080"}/items/similar?queryText=${encodeURIComponent(smartQuery)}`
+        `${import.meta.env.VITE_API_BASE || "http://localhost:8080"}/items/similar?queryText=${encodeURIComponent(smartQuery)}`
       );
       
       if (!res.ok) {
