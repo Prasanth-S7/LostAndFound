@@ -71,6 +71,9 @@ export default function ReportFound() {
           title: formData.item_name,
           description: formData.description,
           location: formData.location_found,
+          contact_email: formData.email,
+          contact_phone: formData.phone_no,
+          category: formData.category,
           status: 'found',
         });
       }

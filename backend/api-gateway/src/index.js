@@ -63,6 +63,21 @@ app.get('/items', async (req, res) => {
   }
 })
 
+app.get('/items/similar', async (req, res) => {
+  try {
+    const r = await axios.get(`${ITEMS_SERVICE_URL}/items/similar`, {
+      params: req.query,
+    });
+    res.status(r.status).json(r.data);
+  } catch (e) {
+    console.error('Gateway /items/similar failed:', e.message);
+    if (e.response) {
+      return res.status(e.response.status).json(e.response.data);
+    }
+    res.status(500).json({ error: 'smart items search failed' });
+  }
+});
+
 app.post('/items', async (req, res) => {
   try {
     const token = extractToken(req)

@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken'
 import pkg from 'pg'
 import nodemailer from 'nodemailer'
 import dotenv from "dotenv"
+import axios from "axios"
 dotenv.config();
 
 const { Pool } = pkg
@@ -53,6 +54,22 @@ async function init() {
   `)
 }
 
+async function getEmbedding(text) {
+  // console.log(process.env.AZURE_OPENAI_ENDPOINT)
+  const endpoint = `${process.env.AZURE_OPENAI_ENDPOINT}/openai/deployments/${process.env.AZURE_OPENAI_DEPLOYMENT}/embeddings?api-version=2023-05-15`
+  const response = await axios.post(
+    endpoint,
+    { input: text },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'api-key': process.env.AZURE_OPENAI_API_KEY
+      }
+    }
+  )
+  return response.data.data[0].embedding
+}
+
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', service: 'items-service' })
 })
@@ -96,10 +113,27 @@ app.post('/items', requireAuth, async (req, res) => {
   const { title, description, location, status, contact_email, contact_phone, category } = req.body || {}
   if (!title) return res.status(400).json({ error: 'title required' })
   try {
+    const embedding = await getEmbedding(`${title} ${description || ''}`)
+    const embeddingStr = `[${embedding.join(',')}]`;
+
     const r = await pool.query(
-      'insert into items (title, description, location, category, status, user_id, contact_email, contact_phone) values ($1,$2,$3,$4,$5,$6,$7,$8) returning *',
-      [title, description || null, location, category || null, status || 'lost', req.user.sub, contact_email || null, contact_phone || null]
-    )
+      `INSERT INTO items 
+       (title, description, location, category, status, user_id, contact_email, contact_phone, embedding)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
+       RETURNING *`,
+      [
+        title,
+        description || null,
+        location || null,
+        category || null,
+        status || 'lost',
+        req.user.sub,
+        contact_email || null,
+        contact_phone || null,
+        embeddingStr // ✅ Correct format
+      ]
+    );
+
     const item = r.rows[0]
     // Fire-and-forget email to reporter when a lost item is created (if email provided)
     if (mailer && item.status === 'lost' && item.contact_email) {
@@ -138,10 +172,54 @@ app.post('/items/:id/found', requireAuth, async (req, res) => {
   }
 })
 
+//smart items search
+app.get('/items/similar', async (req, res) => {
+  const { queryText, status } = req.query;
+  if (!queryText) return res.status(400).json({ error: 'queryText is required' });
+
+  try {
+    // 1️⃣ Generate embedding for the query
+    const queryEmbedding = await getEmbedding(queryText);
+    const queryEmbeddingStr = `[${queryEmbedding.join(',')}]`;
+
+    // 2️⃣ Base query
+    let sql = `
+      SELECT 
+        id, title, description, location, category, status, 
+        contact_email, contact_phone,
+        1 - (embedding <#> $1::vector) AS similarity
+      FROM items
+      WHERE (1 - (embedding <#> $1::vector)) > 0.7
+    `;
+
+    const params = [queryEmbeddingStr];
+
+    // 3️⃣ Optional status filter
+    if (status) {
+      sql += ' AND status = $2';
+      params.push(status);
+    }
+
+    // 4️⃣ Order and limit
+    sql += ' ORDER BY similarity DESC LIMIT 5;';
+
+    // 5️⃣ Execute query
+    const r = await pool.query(sql, params);
+
+    // 6️⃣ Handle no matches
+    if (r.rows.length === 0) {
+      return res.json({ message: "No similar items found", items: [] });
+    }
+
+    res.json({ items: r.rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to find similar items' });
+  }
+});
+
 init().then(() => {
   app.listen(PORT, () => {
     console.log(`items-service listening on ${PORT}`)
   })
 })
-
-

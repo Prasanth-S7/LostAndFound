@@ -14,17 +14,12 @@ const Dashboard = () => {
   const [lostItems, setLostItems] = useState([]);
   const [foundItems, setFoundItems] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [smartQuery, setSmartQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [smartResults, setSmartResults] = useState([]);
+  const [showSmartResults, setShowSmartResults] = useState(false);
 
   useEffect(() => {
-    // Check if user is logged in
-    // const token = localStorage.getItem('token');
-    // if (token) {
-    //   const currentUser = api.getCurrentUser();
-    //   if (currentUser) {
-    //     setSession({ user: currentUser });
-    //   }
-    // }
     fetchItems();
   }, []);
 
@@ -75,7 +70,60 @@ const Dashboard = () => {
     );
   };
 
-  // if (!session) return null;
+  const handleSmartSearch = async () => {
+    if (!smartQuery.trim()) {
+      alert("Please enter a query first");
+      return;
+    }
+    
+    try {
+      setIsLoading(true);
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL || "http://localhost:8080"}/items/similar?queryText=${encodeURIComponent(smartQuery)}`
+      );
+      
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      
+      const data = await res.json();
+      
+      // Map the smart results to match the expected format
+      const mappedResults = (data.items || []).map((item) => {
+        const baseItem = {
+          id: item.id,
+          item_name: item.title,
+          category: item.category,
+          description: item.description,
+          contact_email: item.contact_email,
+          contact_phone: item.contact_phone,
+        };
+        
+        // Add status-specific fields
+        if (item.status === 'lost') {
+          return {
+            ...baseItem,
+            location_lost: item.location,
+            date_lost: item.created_at,
+          };
+        } else {
+          return {
+            ...baseItem,
+            location_found: item.location,
+            date_found: item.created_at,
+          };
+        }
+      });
+      
+      setSmartResults(mappedResults);
+      setShowSmartResults(true);
+    } catch (err) {
+      console.error("Smart search failed", err);
+      alert("Error performing smart search. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -83,14 +131,35 @@ const Dashboard = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8 space-y-4">          
           <p className="text-black font-fanwood text-4xl text-center">Browse lost and found items or report your own</p>
-          <div className="relative max-w-md mx-auto">
+          {/* <div className="relative max-w-md mx-auto">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search items..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+              }}
               className="pl-10 py-5 text-black"
             />
+          </div> */}
+          
+          {/* Smart Search Section */}
+          <div className="max-w-md mx-auto">
+            <div className="flex gap-2">
+              <Input
+                placeholder="e.g., 'black leather wallet with cards'"
+                value={smartQuery}
+                onChange={(e) => setSmartQuery(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleSmartSearch()}
+                className="flex-1 text-black"
+              />
+              <Button 
+                onClick={handleSmartSearch}
+                disabled={isLoading}
+              >
+                Search
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -128,6 +197,27 @@ const Dashboard = () => {
             )}
           </TabsContent>
         </Tabs>
+        
+        {showSmartResults && (
+          <div className="mt-10">
+            <h2 className="text-2xl font-semibold text-center mb-4 text-black">
+              🔍 Smart Matches for "{smartQuery}"
+            </h2>
+            {smartResults.length === 0 ? (
+              <p className="text-center text-muted-foreground">No similar items found.</p>
+            ) : (
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {smartResults.map((item) => {
+                  // Determine type based on which location field exists
+                  const itemType = item.location_lost ? 'lost' : 'found';
+                  return (
+                    <ItemCard key={item.id} item={item} type={itemType} />
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
