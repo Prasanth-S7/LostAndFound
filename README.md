@@ -49,6 +49,31 @@ The system follows a **microservices architecture** for better scalability and m
 
 ---
 
+## 🤖 Smart Item Searching (Gen AI Integration)
+
+LostNFound includes **Smart Item Searching**, a feature powered by **AI-based similarity search**.  
+Instead of relying only on exact text matches, this feature uses **semantic embeddings** to find items that are *contextually similar* to the query.
+
+**Example:**  
+> Searching for _“black school bag”_ can return results like _“dark backpack”_ or _“college laptop bag”_.
+
+**Tech Highlights:**  
+- Uses **PostgreSQL’s `pgvector` extension** for vector similarity.  
+- Embeddings generated via **OpenAI or Azure OpenAI models**.  
+- Enhances item discovery and improves user experience through **natural language understanding**.
+
+---
+
+## 📊 Azure Managed Grafana Integration  
+
+For monitoring and observability, the project integrates **Azure Managed Grafana** with **Azure Monitor** and **Log Analytics**.
+
+**Key Capabilities:**  
+- Real-time dashboards for **CPU, memory, and request metrics** from Container Apps.  
+- Log visualization through **Log Analytics workspace**.  
+- Prebuilt **Azure Container App dashboards** imported in Grafana.  
+- Centralized monitoring of microservices and resource health.
+
 ## 🧠 Features  
 
 - 🔐 **JWT-based authentication**  
