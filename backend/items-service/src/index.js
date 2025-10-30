@@ -5,6 +5,7 @@ import pkg from 'pg'
 import nodemailer from 'nodemailer'
 import dotenv from "dotenv"
 import axios from "axios"
+import { getItemFoundTemplate, getLostItemReportedTemplate } from './mail_template'
 dotenv.config();
 
 const { Pool } = pkg
@@ -141,7 +142,7 @@ app.post('/items', requireAuth, async (req, res) => {
         from: SENDER_EMAIL,
         to: item.contact_email,
         subject: 'Lost item reported',
-        text: `We have recorded your lost item: ${item.title}. We will notify you upon any updates.`
+        html: getLostItemReportedTemplate(item)
       }).catch((error) => {console.log(error)})
     }
     res.status(201).json({ item })
@@ -159,13 +160,13 @@ app.post('/items/:id/found', requireAuth, async (req, res) => {
     if (!r.rows[0]) return res.status(404).json({ error: 'item not found' })
     const item = r.rows[0]
     if (mailer && item.contact_email) {
-      mailer.sendMail({
-        from: SENDER_EMAIL,
-        to: item.contact_email,
-        subject: 'Good news: Your lost item may be found',
-        text: `An item matching your report "${item.title}" was marked as found. Please check the app for details.`
-      }).catch(() => {})
-    }
+    mailer.sendMail({
+      from: SENDER_EMAIL,
+      to: item.contact_email,
+      subject: 'Good news! your lost item is found',
+      html: getItemFoundTemplate(item)
+    }).catch((error) => {console.log(error)})
+  }
     res.json({ item })
   } catch {
     res.status(500).json({ error: 'failed to mark as found' })
